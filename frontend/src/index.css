@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-amazon-background text-ink font-sans antialiased;
+    font-size: 14px;
+  }
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  /* ── Buttons ─────────────────────────────── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded px-4 py-2
+           text-sm font-semibold transition focus:outline-none
+           focus:ring-2 focus:ring-amazon-orange/50 disabled:opacity-50
+           disabled:cursor-not-allowed border border-transparent;
+  }
+  /* Amazon-style yellow button */
+  .btn-primary {
+    @apply btn bg-gradient-to-b from-[#FFD814] to-[#F7CA00]
+           border-[#FCD200] text-ink hover:from-[#F7CA00] hover:to-[#F2BD00]
+           shadow-sm rounded-lg;
+  }
+  /* Amazon-style orange button (Add to Cart) */
+  .btn-cart {
+    @apply btn bg-gradient-to-b from-[#FFB340] to-[#FF8F00]
+           border-[#FF8F00] text-ink hover:from-[#FF8F00] hover:to-[#FF6D00]
+           shadow-sm rounded-lg;
+  }
+  .btn-ghost {
+    @apply btn border-[#D5D9D9] bg-white text-ink hover:bg-slate-50
+           shadow-[0_2px_5px_0_rgba(213,217,217,.5)] rounded-lg;
+  }
+
+  /* ── Cards ───────────────────────────────── */
+  .card {
+    @apply bg-white border-0 shadow-[0_2px_5px_0_rgba(213,217,217,.5)];
+  }
+  .buy-box {
+    @apply bg-white border border-[#D5D9D9] rounded-lg p-5
+           shadow-[0_2px_5px_rgba(15,17,17,0.15)];
+  }
+
+  /* ── Inputs ──────────────────────────────── */
+  .input {
+    @apply w-full rounded border border-[#888C8C] px-3 py-2 text-sm
+           outline-none focus:border-[#E77600]
+           focus:ring-[3px] focus:ring-[#C8A84B]/40 bg-white;
+  }
+  .label {
+    @apply mb-1 block text-sm font-medium text-ink;
+  }
+  .link {
+    @apply text-amazon-blue hover:underline cursor-pointer;
+    color: #007185;
+  }
+  .link:hover {
+    color: #CC0C39;
+  }
+
+  /* ── Amazon-specific UI pieces ───────────── */
+  .prime-badge {
+    @apply text-[#00A8E0] font-bold italic text-xs;
+  }
+  .deal-badge {
+    @apply bg-amazon-deal text-white text-xs font-bold px-1.5 py-0.5 rounded-sm;
+  }
+  .price-whole {
+    @apply text-[22px] font-medium text-ink leading-none;
+  }
+  .price-fraction {
+    @apply text-xs align-super font-medium;
+  }
+  .rating-stars {
+    @apply text-[#FF9900] flex items-center gap-0.5;
+  }
+  .section-title {
+    @apply text-xl font-bold text-ink border-b-0 pb-3;
+  }
+  .amazon-divider {
+    @apply border-t border-[#D5D9D9] my-3;
+  }
+}
