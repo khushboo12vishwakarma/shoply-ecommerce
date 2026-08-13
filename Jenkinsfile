@@ -10,6 +10,12 @@ pipeline {
             }
         }
 
+        stage('Prepare Environment') {
+            steps {
+                sh 'cp backend/.env.example backend/.env'
+            }
+        }
+
         stage('Build Docker Images') {
             steps {
                 sh 'docker compose build'
