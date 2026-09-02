@@ -17,25 +17,25 @@ pipeline {
     
         stage('Prepare Environment') {
             steps {
-                sh 'cp backend/.env.example backend/.env'
+                 bat 'cp backend/.env.example backend/.env'
             }
         }
 
         stage('Build Docker Images') {
             steps {
-                sh 'docker compose build'
+                 bat 'docker compose build'
             }
         }
 
         stage('Start Application') {
             steps {
-                sh 'docker compose up -d'
+                 bat 'docker compose up -d'
             }
         }
 
         stage('Check Containers') {
             steps {
-                sh 'docker compose ps'
+                 bat 'docker compose ps'
             }
         }
     }
