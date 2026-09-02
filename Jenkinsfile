@@ -16,10 +16,10 @@ pipeline {
         }
     
         stage('Prepare Environment') {
-            steps {
-                 bat 'cp backend/.env.example backend/.env'
-            }
-        }
+    steps {
+        bat 'copy backend\\.env.example backend\\.env'
+    }
+}
 
     //     stage('Build Docker Images') {
     //         steps {
