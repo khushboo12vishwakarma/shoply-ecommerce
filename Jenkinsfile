@@ -11,17 +11,7 @@ pipeline {
         }
         stage('Gitleaks Secret Scan') {
     steps {
-        sh '''
-            docker run --rm \
-                --entrypoint /bin/sh \
-                -v "$PWD:/repo" \
-                ghcr.io/gitleaks/gitleaks:latest \
-                -c "
-                    cd /repo &&
-                    git log --oneline -5 &&
-                    gitleaks git . --redact
-                "
-        '''
+        bat 'gitleaks detect --source=. --redact'
     }
 }
     
