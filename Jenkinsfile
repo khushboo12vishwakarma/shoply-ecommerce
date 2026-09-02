@@ -11,20 +11,20 @@ pipeline {
         }
         stage('Gitleaks Secret Scan') {
     steps {
-
         sh '''
             docker run --rm \
+                --entrypoint /bin/sh \
                 -v "$PWD:/repo" \
                 ghcr.io/gitleaks/gitleaks:latest \
-                sh -c "
+                -c "
                     cd /repo &&
                     git log --oneline -5 &&
                     gitleaks git . --redact
                 "
         '''
-
     }
 }
+    
         stage('Prepare Environment') {
             steps {
                 sh 'cp backend/.env.example backend/.env'
