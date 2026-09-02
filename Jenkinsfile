@@ -9,6 +9,14 @@ pipeline {
                     url: 'https://github.com/khushboo12vishwakarma/shoply-ecommerce.git'
             }
         }
+        stage('Gitleaks Secret Scan') {
+            steps {
+                sh '''
+                    gitleaks detect --source . --redact
+                '''
+            }
+        }
+
 
         stage('Prepare Environment') {
             steps {
