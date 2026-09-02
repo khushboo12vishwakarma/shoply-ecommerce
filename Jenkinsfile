@@ -10,10 +10,10 @@ pipeline {
             }
         }
         stage('Gitleaks Secret Scan') {
-    steps {
-        bat 'gitleaks detect --source=. --redact'
-    }
-}
+            steps {
+                bat 'gitleaks detect --source=. --redact'
+            }
+        }
     
         stage('Prepare Environment') {
             steps {
