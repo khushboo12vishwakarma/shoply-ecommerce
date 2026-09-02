@@ -9,17 +9,22 @@ pipeline {
                     url: 'https://github.com/khushboo12vishwakarma/shoply-ecommerce.git'
             }
         }
-        stage('Gitleaks Secret Scan'){
-            steps{
-                sh '''
-                docker run --rm \
+        stage('Gitleaks Secret Scan') {
+    steps {
+
+        sh '''
+            docker run --rm \
                 -v "$PWD:/repo" \
                 ghcr.io/gitleaks/gitleaks:latest \
-                detect --source=/repo --redact
+                sh -c "
+                    cd /repo &&
+                    git log --oneline -5 &&
+                    gitleaks git . --redact
+                "
         '''
-            }
-        
-        }
+
+    }
+}
         stage('Prepare Environment') {
             steps {
                 sh 'cp backend/.env.example backend/.env'
