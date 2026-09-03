@@ -15,6 +15,11 @@ pipeline {
                 bat 'gitleaks detect --source=. --no-git --redact'
             }
         }
+        stage('Trivy Filesystem Scan'){
+            steps{
+                 bat 'trivy fs --scanners vuln .'
+            }
+        }
 
         stage('Prepare Environment') {
             steps {
