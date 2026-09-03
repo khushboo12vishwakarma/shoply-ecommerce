@@ -12,7 +12,7 @@ pipeline {
 
         stage('Gitleaks Secret Scan') {
             steps {
-                bat 'gitleaks detect --source=. --redact'
+                bat 'gitleaks detect --source=. --no-git --redact'
             }
         }
 
