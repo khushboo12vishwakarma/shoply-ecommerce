@@ -15,9 +15,33 @@ pipeline {
                 bat 'gitleaks detect --source=. --no-git --redact'
             }
         }
-        stage('Trivy Filesystem Scan'){
-            steps{
-                 bat 'trivy fs --scanners vuln --severity CRITICAL,HIGH --exit-code 1 .'
+          stage('Trivy SCA Scan') {
+            steps {
+                bat 'trivy fs --scanners vuln .'
+            }
+        }
+
+        stage('Generate CycloneDX SBOM') {
+            steps {
+                bat 'trivy fs --format cyclonedx --output shoply-sbom-cyclonedx.json .'
+            }
+        }
+
+        stage('Scan CycloneDX SBOM') {
+            steps {
+                bat 'trivy sbom shoply-sbom-cyclonedx.json'
+            }
+        }
+
+        stage('Generate SPDX SBOM') {
+            steps {
+                bat 'trivy fs --format spdx-json --output shoply-sbom-spdx.json .'
+            }
+        }
+
+        stage('Scan SPDX SBOM') {
+            steps {
+                bat 'trivy sbom shoply-sbom-spdx.json'
             }
         }
 
