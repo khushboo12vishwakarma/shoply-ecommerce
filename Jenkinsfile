@@ -17,7 +17,7 @@ pipeline {
         }
           stage('Trivy SCA Scan') {
             steps {
-                bat 'trivy fs --scanners vuln .'
+                 bat 'trivy fs --scanners vuln --severity HIGH,CRITICAL --exit-code 1 .'
             }
         }
 
@@ -29,7 +29,7 @@ pipeline {
 
         stage('Scan CycloneDX SBOM') {
             steps {
-                bat 'trivy sbom shoply-sbom-cyclonedx.json'
+                 bat 'trivy sbom --severity HIGH,CRITICAL --exit-code 1 shoply-sbom-cyclonedx.json'
             }
         }
 
@@ -41,7 +41,7 @@ pipeline {
 
         stage('Scan SPDX SBOM') {
             steps {
-                bat 'trivy sbom shoply-sbom-spdx.json'
+                bat 'trivy sbom --severity HIGH,CRITICAL --exit-code 1 shoply-sbom-spdx.json'
             }
         }
 
