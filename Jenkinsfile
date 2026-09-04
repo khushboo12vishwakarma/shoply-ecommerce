@@ -17,7 +17,7 @@ pipeline {
         }
           stage('Trivy SCA Scan') {
             steps {
-                 bat 'trivy fs --scanners vuln'
+                 bat 'trivy fs --scanners vuln .'
             }
         }
 
