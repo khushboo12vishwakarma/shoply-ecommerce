@@ -20,6 +20,11 @@ pipeline {
                  bat 'trivy fs --scanners vuln .'
             }
         }
+        stage('Container scanning'){
+            steps{
+                bat 'trivy image <khushboovishwakarma/amazon_clone-backend:latest>'
+            }
+        }
 
         stage('Generate CycloneDX SBOM') {
             steps {
