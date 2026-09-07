@@ -22,7 +22,7 @@ pipeline {
         }
         stage('Container scanning'){
             steps{
-                bat 'trivy image <khushboovishwakarma/amazon_clone-backend:latest>'
+                bat 'trivy image khushboovishwakarma/amazon_clone-backend:latest'
             }
         }
 
