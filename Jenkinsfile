@@ -17,7 +17,7 @@ pipeline {
         }
         stage('scan container images'){
             steps{
-                bat 'trivy image --input C:\Users\Admin\Downloads\mysql.tar'
+                bat 'trivy image --input C:/Users/Admin/Downloads/mysql.tar'
             }
         }
         stage('License Scan'){
