@@ -22,7 +22,7 @@ pipeline {
         }
         stage('License Scan'){
             steps{
-                bat 'trivy fs --scanner license .'
+                bat 'trivy fs --scanners license .'
             }
         }
           stage('Trivy SCA Scan') {
