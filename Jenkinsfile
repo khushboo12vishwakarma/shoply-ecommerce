@@ -16,15 +16,15 @@ pipeline {
             }
         }
 
-        stage('Generate CycloneDX SBOM for grype'){
+        stage('Generate SBOM using syft'){
             steps{
-                bat 'grype fs --format cyclonedx --output shoply-sbom-grype-cyclonedx.json .'
+                bat 'syft . -o cyclonedx-json=shoply-syft-sbom-cyclonedx.json'
             }
         }
 
          stage('Scan CycloneDX SBOM with grype') {
             steps {
-                 bat 'grype sbom shoply-sbom-grype-cyclonedx.json'
+                 bat 'grype sbom shoply-sbom-syft-cyclonedx.json'
             }
         }
 
