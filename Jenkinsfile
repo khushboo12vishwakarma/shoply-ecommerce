@@ -23,7 +23,7 @@ pipeline {
         }
         stage('scan container with grype'){
             steps{
-                bat 'grype image khushboovishwakarma/amazon_clone-backend:latest'
+                bat 'grype khushboovishwakarma/amazon_clone-backend:latest'
             }
         }
 
