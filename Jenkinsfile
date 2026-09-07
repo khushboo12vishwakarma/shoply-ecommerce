@@ -24,7 +24,7 @@ pipeline {
 
          stage('Scan CycloneDX SBOM with grype') {
             steps {
-                 bat 'grype sbom shoply-sbom-syft-cyclonedx.json'
+                 bat 'grype sbom:shoply-syft-sbom-cyclonedx.json'
             }
         }
 
