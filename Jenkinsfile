@@ -16,7 +16,12 @@ pipeline {
             }
         }
 
-        stage('scan Vulnerabilty with grype'){
+        stage('scanning with syft'){
+            steps{
+                bat 'syft .'
+            }
+        }
+        stage('scan Vulnerability with grype'){
             steps{
                 bat 'grype .'
             }
