@@ -28,6 +28,18 @@ pipeline {
             }
         }
 
+        stage('Generate spdx sbom using syft'){
+            steps{
+                bat 'syft . -o spdx-json=shoply-syft-sbom-spdx-cyclonedx.json'
+            }
+        }
+
+        stage('scan spdx sbom with grype'){
+            steps{
+                bat 'grype sbom:shoply-syft-sbom-spdx-cyclonedx.json'
+            }
+        }
+
         stage('scanning with syft'){
             steps{
                 bat 'syft .'
