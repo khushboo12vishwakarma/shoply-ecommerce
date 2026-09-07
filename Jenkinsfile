@@ -15,9 +15,9 @@ pipeline {
                 bat 'gitleaks detect --source=. --no-git --redact'
             }
         }
-        stage('scan Git repositories'){
+        stage('scan container images'){
             steps{
-                bat 'trivy repo .'
+                bat 'trivy image --input mysql.tar'
             }
         }
         stage('License Scan'){
