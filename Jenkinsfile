@@ -20,6 +20,11 @@ pipeline {
                 bat 'trivy repo .'
             }
         }
+        stage('License Scan'){
+            steps{
+                bat 'trivy fs --scanner license .'
+            }
+        }
           stage('Trivy SCA Scan') {
             steps {
                  bat 'trivy fs --scanners vuln .'
