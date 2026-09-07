@@ -15,21 +15,31 @@ pipeline {
                 bat 'gitleaks detect --source=. --no-git --redact'
             }
         }
+
+        stage('scan Vulnerabilty with grype'){
+            steps{
+                bat 'grype .'
+            }
+        }
+
         stage('scan container images'){
             steps{
                 bat 'trivy image --input C:/Users/Admin/Downloads/mysql.tar'
             }
         }
+
         stage('License Scan'){
             steps{
                 bat 'trivy fs --scanners license .'
             }
         }
+
           stage('Trivy SCA Scan') {
             steps {
                  bat 'trivy fs --scanners vuln .'
             }
         }
+
         stage('Container scanning'){
             steps{
                 bat 'trivy image khushboovishwakarma/amazon_clone-backend:latest'
