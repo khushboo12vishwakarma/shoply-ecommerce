@@ -21,6 +21,11 @@ pipeline {
                 bat 'grype .'
             }
         }
+        stage('scan container with grype'){
+            steps{
+                bat 'grype image khushboovishwakarma/amazon_clone-backend:latest'
+            }
+        }
 
         stage('scan container images'){
             steps{
