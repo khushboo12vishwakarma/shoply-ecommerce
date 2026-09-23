@@ -9,6 +9,20 @@ pipeline {
                     url: 'https://github.com/khushboo12vishwakarma/shoply-ecommerce.git'
             }
         }
+        stage('Verify Fortify Installation') {
+            steps {
+                bat '''
+                echo ==== Java ====
+                java -version
+
+                echo ==== Fortify SCA ====
+                "C:\\Program Files\\Fortify\\OpenText_SAST_Fortify_26.1.0\\bin\\sourceanalyzer.exe" -version
+
+                echo ==== ScanCentral ====
+                "C:\\Program Files\\Fortify\\OpenText_SAST_Fortify_26.1.0\\bin\\scancentral.bat" -version
+                '''
+            }
+        }
 
         stage('Gitleaks Secret Scan') {
             steps {
