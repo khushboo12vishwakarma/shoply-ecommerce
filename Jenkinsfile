@@ -65,9 +65,15 @@ pipeline {
 
         stage('scan container images'){
             steps{
-                bat 'trivy image --input C:/Users/Admin/Downloads/mysql.tar'
+                echo 'Skipping mysql.tar scan because mysql.tar is not available'
             }
         }
+        // stage('scan container images'){
+        //     steps{
+        //         bat 'trivy image --input C:/Users/Admin/Downloads/mysql.tar'
+        //     }
+        // }
+
 
         stage('License Scan'){
             steps{
