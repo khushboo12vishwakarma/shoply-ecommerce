@@ -11,8 +11,9 @@ pipeline {
         }
         stage('ScanCentral') {
             steps {
-                bat "C:\\Program Files\\Fortify\\OpenText_SAST_Fortify_26.1.0\\bin\\scancentral.bat" 
-                
+                bat '''
+                   "C:\\Program Files\\Fortify\\OpenText_SAST_Fortify_26.1.0\\bin\\scancentral.bat" -version
+                 '''
             }
         }
 
