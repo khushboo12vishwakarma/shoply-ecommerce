@@ -9,13 +9,22 @@ pipeline {
                     url: 'https://github.com/khushboo12vishwakarma/shoply-ecommerce.git'
             }
         }
-        stage('ScanCentral') {
-            steps {
-                bat '''
-                   "C:\\Program Files\\Fortify\\OpenText_SAST_Fortify_26.1.0\\bin\\scancentral.bat" -version
-                 '''
-            }
-        }
+        stage('Fortify SAST Translation') {
+    steps {
+        bat '''
+        "C:\\Program Files\\Fortify\\OpenText_SAST_Fortify_26.1.0\\bin\\sourceanalyzer.exe" ^
+        -b ShoplyBuild ^
+        "backend"
+        '''
+
+        bat '''
+        "C:\\Program Files\\Fortify\\OpenText_SAST_Fortify_26.1.0\\bin\\sourceanalyzer.exe" ^
+        -b ShoplyBuild ^
+        "frontend\\src"
+        '''
+    }
+}
+        
 
         stage('Gitleaks Secret Scan') {
             steps {
