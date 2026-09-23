@@ -26,7 +26,7 @@ pipeline {
 }
        stage('ScanCentral SAST Scan') {
     steps {
-        withCredentials([string(credentialsId: 'fortify-ssc-token', variable: 18fc80c8-01f2-466f-a19e-edbb60a0d2bb)]) {
+        withCredentials([string(credentialsId: 'fortify-ssc-token', variable: 'SSC_TOKEN')]) {
             bat '''
             "C:\\Program Files\\Fortify\\OpenText_SAST_Fortify_26.1.0\\bin\\scancentral.bat" ^
             -sscurl "https://tomcat.com:7443/ssc" ^
