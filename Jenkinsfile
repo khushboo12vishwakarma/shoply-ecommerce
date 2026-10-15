@@ -11,7 +11,7 @@ pipeline {
   
         stage('Check Terraform') {
             steps {
-                bat 'terraform -version'
+                bat '"%TERRAFORM_EXE%" -version'
             }
         }
     }
