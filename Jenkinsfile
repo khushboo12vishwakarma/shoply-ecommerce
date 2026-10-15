@@ -39,6 +39,14 @@ pipeline {
                 }
             }
         }
+        stage('Verify Terraform Output') {
+            steps {
+                dir('terraform') {
+                    bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" output application_name'
+                    bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" state list'
+                }
+            }
+        }
   
        
     }
