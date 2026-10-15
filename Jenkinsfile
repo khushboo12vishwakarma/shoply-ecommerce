@@ -11,7 +11,7 @@ pipeline {
   
         stage('Check Terraform') {
             steps {
-                bat '"%TERRAFORM_EXE%" -version'
+               bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" -version'
             }
         }
     }
