@@ -32,6 +32,13 @@ pipeline {
                 }
             }
         }
+                stage('Terraform Apply') {
+            steps {
+                dir('terraform') {
+                    bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" apply -auto-approve -input=false -no-color'
+                }
+            }
+        }
   
        
     }
