@@ -21,3 +21,12 @@ frontend/dist/
 .idea/
 .vscode/
 _verify/
+
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.tfvars.json
+.terraform.lock.hcl

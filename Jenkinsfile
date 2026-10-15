@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        TF_EXE = 'C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe'
+        TF_DIR = 'C:\\Users\\Admin\\Downloads\\shoply-ecommerce-Terraform\\terraform'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -9,41 +14,31 @@ pipeline {
             }
         }
 
+        stages {
+        stage('Check Terraform') {
+            steps {
+                bat '"%TF_EXE%" -version'
+            }
+        }
+
+        stage('Terraform Format Check') {
+            steps {
+                bat '"%TF_EXE%" fmt -check "%TF_DIR%"'
+            }
+        }
+
         stage('Terraform Init') {
             steps {
-                dir('terraform') {
-                    bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" init -input=false'
+                dir('C:\\Users\\Admin\\Downloads\\shoply-ecommerce-Terraform\\terraform') {
+                    bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" init -backend=false -input=false'
                 }
             }
         }
 
         stage('Terraform Validate') {
             steps {
-                dir('terraform') {
+                dir('C:\\Users\\Admin\\Downloads\\shoply-ecommerce-Terraform\\terraform') {
                     bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" validate'
-                }
-            }
-        }
-
-        stage('Terraform Plan') {
-            steps {
-                dir('terraform') {
-                    bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" plan -input=false -no-color'
-                }
-            }
-        }
-                stage('Terraform Apply') {
-            steps {
-                dir('terraform') {
-                    bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" apply -auto-approve -input=false -no-color'
-                }
-            }
-        }
-        stage('Verify Terraform Output') {
-            steps {
-                dir('terraform') {
-                    bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" output application_name'
-                    bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" state list'
                 }
             }
         }
