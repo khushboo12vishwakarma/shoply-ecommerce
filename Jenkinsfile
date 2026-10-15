@@ -11,7 +11,6 @@ pipeline {
   
         stage('Check Terraform') {
             steps {
-                bat 'where terraform'
                 bat 'terraform -version'
             }
         }
