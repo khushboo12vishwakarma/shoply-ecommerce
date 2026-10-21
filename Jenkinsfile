@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         TF_EXE = 'C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe'
+        TF_DIR = 'terraform-local'
     }
 
     stages {
@@ -21,7 +22,7 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                dir('terraform') {
+                dir('terraform-local') {
                     bat '"%TF_EXE%" init -backend=false -input=false'
                 }
             }
@@ -29,15 +30,15 @@ pipeline {
 
         stage('Terraform Format') {
             steps {
-                dir('terraform') {
-                    bat '"%TF_EXE%" fmt'
+                dir('terraform-local') {
+                    bat '"%TF_EXE%" fmt -check'
                 }
             }
         }
 
         stage('Terraform Validate') {
             steps {
-                dir('terraform') {
+                dir('terraform-local') {
                     bat '"%TF_EXE%" validate'
                 }
             }
@@ -45,7 +46,7 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                dir('terraform') {
+                dir('terraform-local') {
                     bat '"%TF_EXE%" plan -input=false'
                 }
             }

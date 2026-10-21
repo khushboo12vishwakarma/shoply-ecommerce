@@ -1,10 +1,23 @@
-variable "project_name" {
-  description = "Name of the application"
+
+variable "instance_type" {
+  description = "EC2 instance type for the Shoply server"
   type        = string
-  default     = "Shoply"
+  default     = "t3.micro"
 }
 
-output "application_name" {
-  description = "Application name for this Terraform lab"
-  value       = var.project_name
+variable "ami_id" {
+  description = "AMI ID for the Shoply EC2 server"
+  type        = string
+  default     = "ami-xxxxxxxxxxxxxxxxx"
+}
+
+resource "aws_instance" "shoply_server" {
+  ami           = var.ami_id
+  instance_type = var.instance_type
+
+  tags = {
+    Name        = "Shoply-Server"
+    Environment = "Learning"
+    Project     = "Shoply"
+  }
 }
