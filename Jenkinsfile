@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['Development', 'Testing', 'Production'],
+            description: 'Select the environment for the Terraform plan'
+        )
+    }
+
     environment {
         TF_EXE = 'C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe'
         TF_DIR = 'terraform-local'
@@ -43,14 +51,16 @@ pipeline {
                 }
             }
         }
-
         stage('Terraform Plan') {
     steps {
         dir('terraform-local') {
-            bat '"%TF_EXE%" plan -input=false -var="environment=Testing"'
+            bat '"%TF_EXE%" plan -input=false -var="environment=%ENVIRONMENT%" -out=tfplan'
+            bat '"%TF_EXE%" show -no-color tfplan > tfplan.txt'
         }
     }
 }
+
+        
         stage('Terraform plan Review'){
             steps{
                 echo 'Terraform plan completed successfully.'
