@@ -40,6 +40,15 @@ pipeline {
                 }
             }
         }
+        stage('Terraform Format'){
+            steps{
+                dir('terraform'){
+                    bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" fmt'
+                }
+            }
+        }
+        
+        
   
        
     }
