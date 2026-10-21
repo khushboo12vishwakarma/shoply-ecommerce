@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         TF_EXE = 'C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe'
-        TF_DIR = 'C:\\Users\\Admin\\Downloads\\shoply-ecommerce-Terraform\\terraform'
     }
 
     stages {
@@ -13,48 +12,43 @@ pipeline {
                     url: 'https://github.com/khushboo12vishwakarma/shoply-ecommerce.git'
             }
         }
+
         stage('Check Terraform') {
             steps {
                 bat '"%TF_EXE%" -version'
             }
         }
 
-        stage('Terraform Format Check') {
+        stage('Terraform Init') {
             steps {
-                bat '"%TF_EXE%" fmt -check "%TF_DIR%"'
+                dir('terraform') {
+                    bat '"%TF_EXE%" init -backend=false -input=false'
+                }
             }
         }
 
-        stage('Terraform Init') {
+        stage('Terraform Format') {
             steps {
-                dir('C:\\Users\\Admin\\Downloads\\shoply-ecommerce-Terraform\\terraform') {
-                    bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" init -backend=false -input=false'
+                dir('terraform') {
+                    bat '"%TF_EXE%" fmt'
                 }
             }
         }
 
         stage('Terraform Validate') {
             steps {
-                dir('C:\\Users\\Admin\\Downloads\\shoply-ecommerce-Terraform\\terraform') {
-                    bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" validate'
+                dir('terraform') {
+                    bat '"%TF_EXE%" validate'
                 }
             }
         }
-        stage('Terraform Format'){
-            steps{
-                dir('terraform'){
-                    bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" fmt'
+
+        stage('Terraform Plan') {
+            steps {
+                dir('terraform') {
+                    bat '"%TF_EXE%" plan -input=false'
                 }
             }
         }
-        stage('Terraform plan'){
-            steps{
-                dir('terraform'){
-                    bat '"C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe" plan -input=false'
-                }
-            }
-        }
-         
-       
     }
 }
