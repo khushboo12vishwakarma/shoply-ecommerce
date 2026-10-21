@@ -52,19 +52,19 @@ pipeline {
             }
         }
         stage('Terraform Plan') {
-    steps {
-        dir('terraform-local') {
-            bat '"%TF_EXE%" plan -input=false -var="environment=%ENVIRONMENT%" -out=tfplan'
-            bat '"%TF_EXE%" show -no-color tfplan > tfplan.txt'
+             steps {
+                 dir('terraform-local') {
+                      bat '"%TF_EXE%" plan -input=false -var="environment=%ENVIRONMENT%" -out=tfplan'
+                      bat '"%TF_EXE%" show -no-color tfplan > tfplan.txt'
+                 }
+            }
         }
-    }
-}
-stage('Archive Terraform Plan') {
-    steps {
-        archiveArtifacts artifacts: 'terraform-local/tfplan.txt',
+        stage('Archive Terraform Plan') {
+             steps {
+                 archiveArtifacts artifacts: 'terraform-local/tfplan.txt',
                          fingerprint: true
-    }
-}
+                 }
+        }
 
         
         stage('Terraform plan Review'){
@@ -74,11 +74,11 @@ stage('Archive Terraform Plan') {
             }
         }
         stage('Terraform Apply') {
-    steps {
-        dir('terraform-local') {
-            bat '"%TF_EXE%" apply -input=false -auto-approve -var="environment=%ENVIRONMENT%"'
+            steps {
+               dir('terraform-local') {
+               bat '"%TF_EXE%" apply -input=false -auto-approve -var="environment=%ENVIRONMENT%"'
+               }
+          }
         }
-    }
-}
     }
 }
