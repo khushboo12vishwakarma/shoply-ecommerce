@@ -45,12 +45,12 @@ pipeline {
         }
 
         stage('Terraform Plan') {
-            steps {
-                dir('terraform-local') {
-                    bat '"%TF_EXE%" plan -input=false'
-                }
-            }
+    steps {
+        dir('terraform-local') {
+            bat '"%TF_EXE%" plan -input=false -var="environment=Testing"'
         }
+    }
+}
         stage('Terraform plan Review'){
             steps{
                 echo 'Terraform plan completed successfully.'
