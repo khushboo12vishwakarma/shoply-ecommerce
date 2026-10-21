@@ -73,5 +73,12 @@ stage('Archive Terraform Plan') {
                 echo 'Review the Terraform Plan stage in Console Output.'
             }
         }
+        stage('Terraform Apply') {
+    steps {
+        dir('terraform-local') {
+            bat '"%TF_EXE%" apply -input=false -auto-approve -var="environment=%ENVIRONMENT%"'
+        }
+    }
+}
     }
 }
