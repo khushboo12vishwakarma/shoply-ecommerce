@@ -51,5 +51,11 @@ pipeline {
                 }
             }
         }
+        stage('Terraform plan Review'){
+            steps{
+                echo 'Terraform plan completed successfully.'
+                echo 'Review the Terraform Plan stage in Console Output.'
+            }
+        }
     }
 }
