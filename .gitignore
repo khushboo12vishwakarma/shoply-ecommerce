@@ -27,6 +27,5 @@ _verify/
 .terraform/
 *.tfstate
 *.tfstate.backup
-*.tfvars
 *.tfvars.json
 .terraform.lock.hcl
