@@ -59,6 +59,12 @@ pipeline {
         }
     }
 }
+stage('Archive Terraform Plan') {
+    steps {
+        archiveArtifacts artifacts: 'terraform-local/tfplan.txt',
+                         fingerprint: true
+    }
+}
 
         
         stage('Terraform plan Review'){
