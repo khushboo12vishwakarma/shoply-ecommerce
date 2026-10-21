@@ -13,8 +13,6 @@ pipeline {
                     url: 'https://github.com/khushboo12vishwakarma/shoply-ecommerce.git'
             }
         }
-
-        stages {
         stage('Check Terraform') {
             steps {
                 bat '"%TF_EXE%" -version'
