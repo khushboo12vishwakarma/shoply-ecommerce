@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        SNYK_EXE = 'C:\\tools\\snyk\\snyk.exe'
+        SNYK_EXE = 'C:\\tools\\snyk.exe'
     }
 
     stages {
