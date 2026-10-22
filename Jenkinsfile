@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    options {
-        skipDefaultCheckout(true)
-        timestamps()
-    }
-
     environment {
         SNYK_EXE = 'C:\\tools\\snyk.exe'
     }
