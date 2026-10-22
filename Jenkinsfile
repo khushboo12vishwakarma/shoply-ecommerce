@@ -49,22 +49,4 @@ pipeline {
             }
         }
     }
-
-    post {
-        success {
-            echo 'Pipeline completed successfully.'
-        }
-
-        unstable {
-            echo 'Scan needs review. Check Snyk findings and dependency errors.'
-        }
-
-        failure {
-            echo 'Pipeline failed. Check Console Output, CLI path, and credentials.'
-        }
-
-        always {
-            echo 'Shoply Snyk scan finished.'
-        }
-    }
 }
