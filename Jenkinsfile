@@ -1,84 +1,39 @@
 pipeline {
     agent any
 
-    parameters {
-        choice(
-            name: 'ENVIRONMENT',
-            choices: ['Development', 'Testing', 'Production'],
-            description: 'Select the environment for the Terraform plan'
-        )
-    }
-
-    environment {
-        TF_EXE = 'C:\\Terraform\\terraform_1.16.5_windows_amd64\\terraform.exe'
-        TF_DIR = 'terraform-local'
+    options {
+        skipDefaultCheckout(true)
+        timestamps()
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Shoply') {
             steps {
                 git branch: 'main',
                     url: 'https://github.com/khushboo12vishwakarma/shoply-ecommerce.git'
             }
         }
 
-        stage('Check Terraform') {
+        stage('Snyk Dependency Scan') {
             steps {
-                bat '"%TF_EXE%" -version'
+                snykSecurity(
+                    snykInstallation: 'Snyk-CLI',
+                    snykTokenId: 'snyk-api-token',
+                    additionalArguments: '--all-projects',
+                    failOnError: true,
+                    failOnIssues: false,
+                    monitorProjectOnBuild: false
+                )
             }
         }
+    }
 
-        stage('Terraform Init') {
-            steps {
-                dir('terraform-local') {
-                    bat '"%TF_EXE%" init -backend=false -input=false'
-                }
-            }
+    post {
+        success {
+            echo 'Shoply Snyk scan completed. Review the scan output.'
         }
-
-        stage('Terraform Format') {
-            steps {
-                dir('terraform-local') {
-                    bat '"%TF_EXE%" fmt -check'
-                }
-            }
-        }
-
-        stage('Terraform Validate') {
-            steps {
-                dir('terraform-local') {
-                    bat '"%TF_EXE%" validate'
-                }
-            }
-        }
-        stage('Terraform Plan') {
-             steps {
-                 dir('terraform-local') {
-                      bat '"%TF_EXE%" plan -input=false -var="environment=%ENVIRONMENT%" -out=tfplan'
-                      bat '"%TF_EXE%" show -no-color tfplan > tfplan.txt'
-                 }
-            }
-        }
-        stage('Archive Terraform Plan') {
-             steps {
-                 archiveArtifacts artifacts: 'terraform-local/tfplan.txt',
-                         fingerprint: true
-                 }
-        }
-
-        
-        stage('Terraform plan Review'){
-            steps{
-                echo 'Terraform plan completed successfully.'
-                echo 'Review the Terraform Plan stage in Console Output.'
-            }
-        }
-        stage('Terraform Apply') {
-            steps {
-               dir('terraform-local') {
-               bat '"%TF_EXE%" apply -input=false -auto-approve -var="environment=%ENVIRONMENT%"'
-               }
-          }
+        failure {
+            echo 'The pipeline failed. Check Console Output for the error.'
         }
     }
 }
