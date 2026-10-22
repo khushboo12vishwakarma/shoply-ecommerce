@@ -1,11 +1,5 @@
 pipeline {
     agent any
-
-    options {
-        skipDefaultCheckout(true)
-        timestamps()
-    }
-
     stages {
         stage('Checkout Shoply') {
             steps {
