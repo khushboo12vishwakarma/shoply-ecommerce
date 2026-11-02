@@ -10,25 +10,38 @@ pipeline {
                 git branch: 'main',
                     url: 'https://github.com/khushboo12vishwakarma/shoply-ecommerce.git'
             }
-        } 
-        stage('Start Monitoring Test') {
+        }
+
+        stage('Monitoring - Start') {
             steps {
-                echo 'Starting Prometheus and Grafana test'
-                bat 'echo Jenkins test is running'
+                echo 'Starting Prometheus and Grafana monitoring test'
+                echo 'Check Jenkins metrics in Prometheus and Grafana'
+
+                bat 'echo Jenkins monitoring test is running'
+
                 sleep time: 60, unit: 'SECONDS'
             }
         }
 
-        stage('Finish Test') {
+        stage('Monitoring - Verify') {
             steps {
-                echo 'Prometheus and Grafana test completed successfully'
+                echo 'Monitoring test completed'
+                echo 'Jenkins metrics are collected separately by Prometheus'
             }
         }
     }
 
     post {
         success {
-            echo 'Monitoring test passed'
+            echo 'Shoply monitoring pipeline completed successfully'
+        }
+
+        failure {
+            echo 'Pipeline failed. Check the Jenkins Console Output.'
+        }
+
+        always {
+            echo 'Monitoring test pipeline finished'
         }
     }
 }
