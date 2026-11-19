@@ -1,140 +1,199 @@
+
 pipeline {
     agent any
 
+    options {
+        timestamps()
+    }
+
     stages {
 
+        // 1. Checkout Source Code
         stage('Checkout') {
             steps {
                 git branch: 'main',
                     url: 'https://github.com/khushboo12vishwakarma/shoply-ecommerce.git'
             }
         }
-        stage('ScanCentral SAST Scan'){
-            steps{
-                withCredentials([string(
-                     credentialsId: 'scancentral-ssc-token',
-                     variable: 'SSC_TOKEN'
-                 )]){
-            bat '''
-            "C:\\Program Files\\Fortify\\OpenText_SAST_Fortify_26.1.0\\bin\\scancentral.bat" ^
-            -sscurl "https://tomcat.com:7443/ssc" ^
-            -ssctoken "%SSC_TOKEN%" ^
-            start -upload ^
-            --application "shoply-ecommerce" ^
-            --application-version "1.0.0" ^
-            -b "ShoplyBuild" ^
-            -scan
-            '''
-        }
+
+        // 2. Create Reports Directory
+        stage('Prepare Reports Directory') {
+            steps {
+                bat 'if not exist reports mkdir reports'
             }
         }
-        
 
+        // 3. Gitleaks Secret Scanning
         stage('Gitleaks Secret Scan') {
             steps {
-                bat 'gitleaks detect --source=. --no-git --redact'
+                script {
+                    def rc = bat(
+                        returnStatus: true,
+                        script: 'gitleaks detect --source=. --no-git --redact --report-format json --report-path reports\\gitleaks-report.json'
+                    )
+                    echo "Gitleaks exit code: ${rc}"
+                }
             }
         }
 
-        stage('Generate SBOM using syft'){
-            steps{
-                bat 'syft . -o cyclonedx-json=shoply-syft-sbom-cyclonedx.json'
-            }
-        }
-
-         stage('Scan CycloneDX SBOM with grype') {
+        // 4. Generate SBOM using Syft
+        stage('Generate SBOM using Syft') {
             steps {
-                 bat 'grype sbom:shoply-syft-sbom-cyclonedx.json'
+                bat 'syft . -o cyclonedx-json=reports\\syft-cyclonedx.json'
+                bat 'syft . -o spdx-json=reports\\syft-spdx.json'
             }
         }
 
-        stage('Generate spdx sbom using syft'){
-            steps{
-                bat 'syft . -o spdx-json=shoply-syft-sbom-spdx-cyclonedx.json'
-            }
-        }
-
-        stage('scan spdx sbom with grype'){
-            steps{
-                bat 'grype sbom:shoply-syft-sbom-spdx-cyclonedx.json'
-            }
-        }
-
-        stage('scanning with syft'){
-            steps{
-                bat 'syft .'
-            }
-        }
-        stage('scan Vulnerability with grype'){
-            steps{
-                bat 'grype .'
-            }
-        }
-        stage('scan container with grype'){
-            steps{
-                bat 'grype khushboovishwakarma/amazon_clone-backend:latest'
-            }
-        }
-
-        stage('scan container images'){
-            steps{
-                echo 'Skipping mysql.tar scan because mysql.tar is not available'
-            }
-        }
-        // stage('scan container images'){
-        //     steps{
-        //         bat 'trivy image --input C:/Users/Admin/Downloads/mysql.tar'
-        //     }
-        // }
-
-
-        stage('License Scan'){
-            steps{
-                bat 'trivy fs --scanners license .'
-            }
-        }
-
-          stage('Trivy SCA Scan') {
+        // 5. Grype CycloneDX SBOM Scan
+        stage('Grype CycloneDX SBOM Scan') {
             steps {
-                 bat 'trivy fs --scanners vuln .'
+                script {
+                    def rc = bat(
+                        returnStatus: true,
+                        script: 'grype sbom:reports/syft-cyclonedx.json -o json > reports\\grype-cyclonedx-report.json'
+                    )
+                    echo "Grype CycloneDX exit code: ${rc}"
+                }
             }
         }
 
-        stage('Container scanning'){
-            steps{
-                bat 'trivy image khushboovishwakarma/amazon_clone-backend:latest'
-            }
-        }
-
-        stage('Generate CycloneDX SBOM') {
+        // 6. Grype SPDX SBOM Scan
+        stage('Grype SPDX SBOM Scan') {
             steps {
-                bat 'trivy fs --format cyclonedx --output shoply-sbom-cyclonedx.json .'
+                script {
+                    def rc = bat(
+                        returnStatus: true,
+                        script: 'grype sbom:reports/syft-spdx.json -o json > reports\\grype-spdx-report.json'
+                    )
+                    echo "Grype SPDX exit code: ${rc}"
+                }
             }
         }
 
-        stage('Scan CycloneDX SBOM') {
+        // 7. Grype Filesystem Scan
+        stage('Grype Filesystem Scan') {
             steps {
-                 bat 'trivy sbom shoply-sbom-cyclonedx.json'
+                script {
+                    def rc = bat(
+                        returnStatus: true,
+                        script: 'grype . -o json > reports\\grype-filesystem-report.json'
+                    )
+                    echo "Grype filesystem exit code: ${rc}"
+                }
             }
         }
 
-        stage('Generate SPDX SBOM') {
+        // 8. Grype Container Image Scan
+        stage('Grype Container Scan') {
             steps {
-                bat 'trivy fs --format spdx-json --output shoply-sbom-spdx.json .'
+                script {
+                    def rc = bat(
+                        returnStatus: true,
+                        script: 'grype khushboovishwakarma/amazon_clone-backend:latest -o json > reports\\grype-container-report.json'
+                    )
+                    echo "Grype container exit code: ${rc}"
+                }
             }
         }
 
-        stage('Scan SPDX SBOM') {
+        // 9. Trivy License Scanning
+        stage('Trivy License Scan') {
             steps {
-                bat 'trivy sbom shoply-sbom-spdx.json'
+                script {
+                    def rc = bat(
+                        returnStatus: true,
+                        script: 'trivy fs --scanners license --format json --output reports\\trivy-license-report.json .'
+                    )
+                    echo "Trivy license exit code: ${rc}"
+                }
             }
         }
 
-        stage('Prepare Environment') {
+        // 10. Trivy Filesystem Vulnerability Scan
+        stage('Trivy SCA Scan') {
             steps {
-                bat 'copy backend\\.env.example backend\\.env'
+                script {
+                    def rc = bat(
+                        returnStatus: true,
+                        script: 'trivy fs --scanners vuln --format json --output reports\\trivy-filesystem-report.json .'
+                    )
+                    echo "Trivy filesystem exit code: ${rc}"
+                }
             }
         }
 
+        // 11. Trivy Container Image Scan
+        stage('Trivy Container Scan') {
+            steps {
+                script {
+                    def rc = bat(
+                        returnStatus: true,
+                        script: 'trivy image --format json --output reports\\trivy-container-report.json khushboovishwakarma/amazon_clone-backend:latest'
+                    )
+                    echo "Trivy container exit code: ${rc}"
+                }
+            }
+        }
+
+        // 12. Generate Trivy CycloneDX SBOM
+        stage('Generate Trivy CycloneDX SBOM') {
+            steps {
+                bat 'trivy fs --format cyclonedx --output reports\\trivy-cyclonedx.json .'
+            }
+        }
+
+        // 13. Scan Trivy CycloneDX SBOM
+        stage('Trivy CycloneDX SBOM Scan') {
+            steps {
+                script {
+                    def rc = bat(
+                        returnStatus: true,
+                        script: 'trivy sbom --format json --output reports\\trivy-cyclonedx-report.json reports\\trivy-cyclonedx.json'
+                    )
+                    echo "Trivy CycloneDX exit code: ${rc}"
+                }
+            }
+        }
+
+        // 14. Generate Trivy SPDX SBOM
+        stage('Generate Trivy SPDX SBOM') {
+            steps {
+                bat 'trivy fs --format spdx-json --output reports\\trivy-spdx.json .'
+            }
+        }
+
+        // 15. Scan Trivy SPDX SBOM
+        stage('Trivy SPDX SBOM Scan') {
+            steps {
+                script {
+                    def rc = bat(
+                        returnStatus: true,
+                        script: 'trivy sbom --format json --output reports\\trivy-spdx-report.json reports\\trivy-spdx.json'
+                    )
+                    echo "Trivy SPDX exit code: ${rc}"
+                }
+            }
+        }
+    }
+
+    // 16. Archive All Security Reports
+    post {
+        always {
+            echo 'Archiving security scan reports...'
+
+            archiveArtifacts(
+                artifacts: 'reports/**',
+                allowEmptyArchive: true,
+                fingerprint: true
+            )
+        }
+
+        success {
+            echo 'Security scanning pipeline completed successfully.'
+        }
+
+        failure {
+            echo 'Pipeline failed. Check Console Output.'
+        }
     }
 }
