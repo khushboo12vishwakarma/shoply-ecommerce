@@ -11,6 +11,8 @@ pipeline {
         // 1. Checkout Source Code
         stage('Checkout') {
             steps {
+                echo 'Checking out the Shoply source code...'
+
                 git branch: 'main',
                     url: 'https://github.com/khushboo12vishwakarma/shoply-ecommerce.git'
             }
